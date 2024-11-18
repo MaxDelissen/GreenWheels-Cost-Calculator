@@ -27,7 +27,7 @@ public static class RatesDictionary
 			{
 				{ SubscriptionEnum.Soms, (5.40, 0.47, 1, null) },
 				{ SubscriptionEnum.Regelmatig, (4.70, 0.43, 0, new Dictionary<int, double> { { 1, 49.00 }, { 2, 85.00 }, { 7, 189.00 } }) },
-				{ SubscriptionEnum.Vaak, (3.80, 0.47, 0, new Dictionary<int, double> { { 1, 42.00 }, { 2, 75.00 }, { 7, 179.00 } }) }
+				{ SubscriptionEnum.Vaak, (3.80, 0.36, 0, new Dictionary<int, double> { { 1, 42.00 }, { 2, 75.00 }, { 7, 179.00 } }) }
 			}
 		}
 	};

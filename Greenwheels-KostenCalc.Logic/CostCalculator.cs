@@ -34,7 +34,7 @@ public class CostCalculator
 				double cost = CalculateCost(subscription.Value, userInput.Hours, userInput.Kilometers);
 				if (subscription.Value.LongTripBenefit != null)
 				{
-					cost = Math.Min(cost, CalculateLongTripBenefit(subscription.Value.LongTripBenefit, userInput.Hours, subscription.Value.HourlyRate));
+					cost = Math.Min(cost, CalculateLongTripBenefit(subscription.Value, userInput.Hours, userInput.Kilometers));
 				}
 
 				if (subscription.Key != userInput.CurrentSubscription)
@@ -52,14 +52,38 @@ public class CostCalculator
 	private double CalculateCost((double HourlyRate, double KmRate, double StartingRate, Dictionary<int, double> LongTripBenefit) rate, double hours, double kilometers) =>
 		rate.HourlyRate * hours + rate.KmRate * kilometers + rate.StartingRate;
 
-	private double CalculateLongTripBenefit(Dictionary<int, double> longTripBenefit, double hours, double normalHourlyRate)
+	private double CalculateLongTripBenefit((double HourlyRate, double KmRate, double StartingRate, Dictionary<int, double> LongTripBenefit) rate, double hours, double kilometers)
 	{
-		int days = (int)hours / 24;
-		double extraHours = hours % 24;
+		// Convert hours to full days and extra hours
+		int days = (int)(hours / 24); // Full days
+		double extraHours = hours % 24; // Extra hours that don't form a full day
 
-		double dayCosts = days > 0 ? longTripBenefit.GetValueOrDefault(days, double.MaxValue) : 0;
-		double extraCosts = extraHours * normalHourlyRate;
+		double totalCost = 0;
 
-		return dayCosts + extraCosts;
+		// Apply long trip benefits for complete days
+		if (days > 0)
+		{
+			// For each complete day, apply the appropriate long trip benefit if available
+			foreach (var entry in rate.LongTripBenefit.OrderByDescending(x => x.Key)) // Order by largest day count first
+			{
+				if (days >= entry.Key)
+				{
+					totalCost += entry.Value; // Apply the benefit for this section of days
+					days -= entry.Key; // Reduce the number of remaining days
+					break;
+				}
+			}
+		}
+
+		// For the remaining days (if any), calculate the cost for those
+		totalCost += days * 24 * rate.HourlyRate; // For leftover days, calculate cost without benefit
+
+		// Calculate the cost for extra hours (those that don't form a full day)
+		totalCost += extraHours * rate.HourlyRate;
+
+		// Calculate the cost for the kilometers
+		totalCost += kilometers * rate.KmRate;
+
+		return totalCost;
 	}
 }

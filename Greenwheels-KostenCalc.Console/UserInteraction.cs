@@ -12,7 +12,7 @@ public class UserInteraction
     {
         var userInputDto = new UserInputDto();
 
-        userInputDto.Hours = GetValidInput<double>("Voer het aantal uren in dat je de auto wilt huren (Gebruik ',' voor decimalen:", double.TryParse);
+        userInputDto.Hours = GetValidInput<double>("Voer het aantal uren in dat je de auto wilt huren:", double.TryParse);
         userInputDto.Kilometers = GetValidInput<double>("Voer het geschatte aantal kilometers in:", double.TryParse);
         userInputDto.CurrentSubscription = GetSubscriptionType();
 
@@ -26,7 +26,8 @@ public class UserInteraction
             Console.WriteLine(prompt);
             var input = Console.ReadLine();
             //Replace dot with comma for decimal numbers
-            input = input?.Replace('.', ',');
+            var decimalSeparator = System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+            input = input?.Replace(",", decimalSeparator).Replace(".", decimalSeparator);
             if (tryParse(input, out var result))
                 return result;
             Console.WriteLine("Voer een geldig getal in.");
