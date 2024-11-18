@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Greenwheels-KostenCalc.Cons
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Greenwheels-KostenCalc.Logic", "Greenwheels-KostenCalc.Logic\Greenwheels-KostenCalc.Logic.csproj", "{A170BDFC-7B58-48CC-815F-7A6398C2D34E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Greenwheels-KostenCalc.Test", "Greenwheels-KostenCalc.Test\Greenwheels-KostenCalc.Test.csproj", "{72664703-6A57-4655-AA51-C471ACD1DD70}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -16,5 +18,9 @@ Global
 		{D3544978-7492-43CD-B99C-B1E06AFD4BDA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A170BDFC-7B58-48CC-815F-7A6398C2D34E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A170BDFC-7B58-48CC-815F-7A6398C2D34E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72664703-6A57-4655-AA51-C471ACD1DD70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72664703-6A57-4655-AA51-C471ACD1DD70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72664703-6A57-4655-AA51-C471ACD1DD70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72664703-6A57-4655-AA51-C471ACD1DD70}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -8,4 +8,8 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Greenwheels-KostenCalc.Logic\Greenwheels-KostenCalc.Logic.csproj" />
+    </ItemGroup>
+
 </Project>

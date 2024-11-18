@@ -1,98 +1,89 @@
-using Greenwheels_KostenCalc.Resources;
+
+
+using Greenwheels_KostenCalc.Logic;
+using Greenwheels_KostenCalc.Logic.Resources.DTO;
+using Greenwheels_KostenCalc.Logic.Resources.Enums;
 
 namespace Greenwheels_KostenCalc;
 
 public class UserInteraction
 {
-	public UserInputDto GetUserInput()
-	{
-		UserInputDto userInputDto = new();
-		while (true)
-		{
-			Console.WriteLine("Voer het aantal uren in dat je de auto wilt huren:");
-			if (int.TryParse(Console.ReadLine(), out int uren))
-			{
-				userInputDto.Uren = uren;
-				break;
-			}
-			Console.WriteLine("Voer een geldig getal in.");
-		}
-		while (true)
-		{
-			Console.WriteLine("Voer het geschatte aantal kilometers in:");
-			if (double.TryParse(Console.ReadLine(), out double kilometers))
-			{
-				userInputDto.Kilometers = kilometers;
-				break;
-			}
-			Console.WriteLine("Voer een geldig getal in.");
-		}
-		while (true)
-		{
-			Console.WriteLine("Heb je al een abonnement? (Soms (1), Regelmatig (2), Vaak (3):");
-			Console.WriteLine("Als je geen abonnement hebt (Soms), druk op Enter.");
-			string? input = Console.ReadLine();
-			if (string.IsNullOrWhiteSpace(input))
-			{
-				userInputDto.HuidigAbonnement = AbonnementType.Soms;
-				break;
-			}
-			if (Enum.TryParse(input.Trim(), out AbonnementType huidigAbonnement))
-			{
-				userInputDto.HuidigAbonnement = huidigAbonnement;
-				break;
-			}
-			switch (input)
-			{
-				case "1":
-					userInputDto.HuidigAbonnement = AbonnementType.Soms;
-					break;
-				case "2":
-					userInputDto.HuidigAbonnement = AbonnementType.Regelmatig;
-					break;
-				case "3":
-					userInputDto.HuidigAbonnement = AbonnementType.Vaak;
-					break;
-				default:
-					Console.WriteLine("Voer een geldig getal in.");
-					break;
-			}
-		}
+    public UserInputDto GetUserInput()
+    {
+        var userInputDto = new UserInputDto();
 
-		return userInputDto;
-	}
+        userInputDto.Hours = GetValidInput<double>("Voer het aantal uren in dat je de auto wilt huren (Gebruik ',' voor decimalen:", double.TryParse);
+        userInputDto.Kilometers = GetValidInput<double>("Voer het geschatte aantal kilometers in:", double.TryParse);
+        userInputDto.CurrentSubscription = GetSubscriptionType();
 
-	public void ShowResults(List<HuurOptie> resultaten)
-	{
-		Console.WriteLine("\nKostenoverzicht:");
-		Console.WriteLine("Denk ook na over toekomstige huur, want dan kan een abonnement alsnog voordeliger zijn.");
-		Console.WriteLine(new string('=', 25));
+        return userInputDto;
+    }
 
-		// Group results by AutoType
-		var groupedResults = resultaten.GroupBy(r => r.AutoType);
+    private T GetValidInput<T>(string prompt, TryParseHandler<T> tryParse)
+    {
+        while (true)
+        {
+            Console.WriteLine(prompt);
+            var input = Console.ReadLine();
+            //Replace dot with comma for decimal numbers
+            input = input?.Replace('.', ',');
+            if (tryParse(input, out var result))
+                return result;
+            Console.WriteLine("Voer een geldig getal in.");
+        }
+    }
 
-		foreach (var group in groupedResults)
-		{
-			// Print AutoType as header
-			Console.WriteLine($"\n*** {group.Key.GetDescription()} ***");
+    private SubscriptionEnum GetSubscriptionType()
+    {
+        while (true)
+        {
+            Console.WriteLine("Heb je al een abonnement? (Soms (1), Regelmatig (2), Vaak (3):");
+            Console.WriteLine("Als je geen abonnement hebt (Soms), druk op Enter.");
+            var input = Console.ReadLine();
 
-			// Determine the cheapest option for this AutoType
-			var cheapestOption = group.MinBy(r => r.Kosten);
+            if (string.IsNullOrWhiteSpace(input))
+                return SubscriptionEnum.Soms; //Default to 'Soms'
 
-			// Print a table of results for this AutoType
-			Console.WriteLine($"{"Abonnement",-15} {"Kosten",-10}");
-			Console.WriteLine(new string('-', 25));
+            //First try to parse the input as an Enum (For fully typed input)
+            if (Enum.TryParse(input.Trim(), true, out SubscriptionEnum subscription))
+                return subscription;
 
-			foreach (var resultaat in group)
-			{
-				// Highlight the cheapest option with an asterisk
-				string highlight = resultaat == cheapestOption ? "➡️" : "  ";
-				Console.WriteLine($"{highlight} {resultaat.AbonnementType,-15} €{resultaat.Kosten,8:F2}");
-			}
-		}
+            switch (input)
+            {
+                case "1": return SubscriptionEnum.Soms;
+                case "2": return SubscriptionEnum.Regelmatig;
+                case "3": return SubscriptionEnum.Vaak;
+                default: Console.WriteLine("Voer een geldig getal in."); break;
+            }
+        }
+    }
 
-		Console.WriteLine(new string('=', 25));
-	}
+    public void ShowResults(List<RentOptionDto> results)
+    {
+        Console.WriteLine("\nKostenoverzicht:");
+        Console.WriteLine("Denk ook na over toekomstige huur, want dan kan een abonnement alsnog voordeliger zijn.");
+        Console.WriteLine(new string('=', 25));
 
+        var groupedResults = results.GroupBy(r => r.CarType);
 
+        foreach (var group in groupedResults)
+        {
+            Console.WriteLine($"\n*** {group.Key.GetDescription()} ***");
+
+            var cheapestOption = group.MinBy(r => r.Cost);
+
+            Console.WriteLine($"{"Abonnement",-15} {"Kosten",-10}");
+            Console.WriteLine(new string('-', 25));
+
+            foreach (var result in group)
+            {
+                var highlight = result == cheapestOption ? "➡️" : "  ";
+                Console.WriteLine($"{highlight} {result.SubscriptionEnum,-15} €{result.Cost,8:F2}");
+            }
+        }
+
+        Console.WriteLine(new string('=', 25));
+    }
+
+    private delegate bool TryParseHandler<T>(string input, out T result);
 }
