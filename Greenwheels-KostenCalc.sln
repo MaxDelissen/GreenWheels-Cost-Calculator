@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Greenwheels-KostenCalc", "Greenwheels-KostenCalc\Greenwheels-KostenCalc.csproj", "{D3544978-7492-43CD-B99C-B1E06AFD4BDA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D3544978-7492-43CD-B99C-B1E06AFD4BDA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3544978-7492-43CD-B99C-B1E06AFD4BDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3544978-7492-43CD-B99C-B1E06AFD4BDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3544978-7492-43CD-B99C-B1E06AFD4BDA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
